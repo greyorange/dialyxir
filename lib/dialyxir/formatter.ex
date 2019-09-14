@@ -32,7 +32,7 @@ defmodule Dialyxir.Formatter do
     result(formatted_warnings, filter_map, formatted_unnecessary_skips)
   end
 
-  defp result(formatted_warnings, filter_map, formatted_unnecessary_skips) do
+  def result(formatted_warnings, filter_map, formatted_unnecessary_skips) do
     cond do
       FilterMap.unused_filters?(filter_map) && filter_map.unused_filters_as_errors? ->
         {:error, formatted_warnings, {:unused_filters_present, formatted_unnecessary_skips}}
@@ -45,11 +45,11 @@ defmodule Dialyxir.Formatter do
     end
   end
 
-  defp format_warning(warning, :raw) do
+  def format_warning(warning, :raw) do
     inspect(warning, limit: :infinity)
   end
 
-  defp format_warning(warning, :dialyzer) do
+  def format_warning(warning, :dialyzer) do
     # OTP 22 uses indented output, but that's incompatible with dialyzer.ignore-warnings format.
     # Can be disabled, but OTP 21 and older only accept an atom, so only disable on OTP 22+.
     opts =
@@ -63,7 +63,7 @@ defmodule Dialyxir.Formatter do
     |> String.replace_trailing("\n", "")
   end
 
-  defp format_warning({_tag, {file, line}, message}, :short) do
+  def format_warning({_tag, {file, line}, message}, :short) do
     {warning_name, arguments} = message
     base_name = Path.relative_to_cwd(file)
 
@@ -73,7 +73,7 @@ defmodule Dialyxir.Formatter do
     "#{base_name}:#{line}:#{warning_name} #{string}"
   end
 
-  defp format_warning(dialyzer_warning = {_tag, {file, line}, message}, :dialyxir) do
+  def format_warning(dialyzer_warning = {_tag, {file, line}, message}, :dialyxir) do
     {warning_name, arguments} = message
     base_name = Path.relative_to_cwd(file)
 
